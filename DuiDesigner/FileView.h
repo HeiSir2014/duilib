@@ -65,6 +65,7 @@ public:
 	void OnProjectNew();
 	void OnProjectClose();
 	void OnProjectOpen();
+	void OnProjectOpen(LPCTSTR sProjectPath);
 	void SaveProject();
 
 protected:

@@ -2454,6 +2454,16 @@ void CPaintManagerUI::AddMultiLanguageString(int id, LPCTSTR pStrMultiLanguage)
 	}
 }
 
+void CPaintManagerUI::AddMultiLanguageString(LPCTSTR id, LPCTSTR pStrMultiLanguage)
+{
+	CDuiString* pMultiLanguage = new CDuiString(pStrMultiLanguage);
+	if (pMultiLanguage != NULL)
+	{
+		CDuiString* pOldMultiLanguage = static_cast<CDuiString*>(m_SharedResInfo.m_MultiLanguageHash.Set(id, (LPVOID)pMultiLanguage));
+		if (pOldMultiLanguage) delete pOldMultiLanguage;
+	}
+}
+
 LPCTSTR CPaintManagerUI::GetMultiLanguageString(int id)
 {
 	TCHAR idBuffer[16];
@@ -2461,6 +2471,13 @@ LPCTSTR CPaintManagerUI::GetMultiLanguageString(int id)
 	_itot(id, idBuffer, 10);
 
 	CDuiString* pMultiLanguage = static_cast<CDuiString*>(m_SharedResInfo.m_MultiLanguageHash.Find(idBuffer));
+	if (pMultiLanguage) return pMultiLanguage->GetData();
+	return NULL;
+}
+
+LPCTSTR CPaintManagerUI::GetMultiLanguageString(LPCTSTR id)
+{
+	CDuiString* pMultiLanguage = static_cast<CDuiString*>(m_SharedResInfo.m_MultiLanguageHash.Find(id));
 	if (pMultiLanguage) return pMultiLanguage->GetData();
 	return NULL;
 }
@@ -2497,9 +2514,11 @@ void CPaintManagerUI::ProcessMultiLanguageTokens(CDuiString& pStrMultiLanguage)
 	while( iPos >= 0 ) {
 		if( pStrMultiLanguage.GetAt(iPos + 1) == _T('{') ) {
 			int iEndPos = iPos + 2;
-			while( isdigit(pStrMultiLanguage.GetAt(iEndPos)) ) iEndPos++;
+			while( pStrMultiLanguage.GetAt(iEndPos) != '}' ) iEndPos++;
 			if( pStrMultiLanguage.GetAt(iEndPos) == '}' ) {
-				LPCTSTR pStrTemp = CPaintManagerUI::GetMultiLanguageString((UINT)_ttoi(pStrMultiLanguage.GetData() + iPos + 2));
+				UINT iPosStart = iPos + 2;
+				CDuiString sId= pStrMultiLanguage.Mid(iPosStart , iEndPos - iPosStart);
+				LPCTSTR pStrTemp = CPaintManagerUI::GetMultiLanguageString(sId);
                 if (pStrTemp)
 				    pStrMultiLanguage.Replace(pStrMultiLanguage.Mid(iPos, iEndPos - iPos + 1), pStrTemp);
 			}

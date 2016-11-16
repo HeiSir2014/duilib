@@ -385,7 +385,7 @@ namespace DuiLib
 
 	int CDuiString::GetLength() const
 	{ 
-		return (int) _tcslen(m_pstr); 
+		return m_pstr == NULL ? -1:(int) _tcslen(m_pstr); 
 	}
 
 	CDuiString::operator LPCTSTR() const 
@@ -436,7 +436,7 @@ namespace DuiLib
 
 	bool CDuiString::IsEmpty() const 
 	{ 
-		return m_pstr[0] == _T('\0'); 
+		return m_pstr == NULL || m_pstr[0] == _T('\0'); 
 	}
 
 	void CDuiString::Empty() 

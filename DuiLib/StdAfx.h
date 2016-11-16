@@ -51,6 +51,16 @@
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0500
 #endif
+#include <windows.h>
+#include <objbase.h>
+#include <vector>
+#include <string>
+#include <map>
+#include <windows.h>
+#include <commctrl.h>
+#include <tchar.h>
+#include <shlwapi.h>
+#include <list>
 
 #include "UIlib.h"
 

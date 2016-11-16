@@ -6,7 +6,7 @@
 #include "MainFrm.h"
 #include "DialogTemplateOpen.h"
 #include "DialogCheckUpdate.h"
-
+#include "ConfigFile.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -227,6 +227,23 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	lstBasicCommands.AddTail(ID_SORTING_GROUPBYTYPE);
 
 	CMFCToolBar::SetBasicCommands(lstBasicCommands);
+
+	ITEMIDLIST *pidl;
+	SHGetSpecialFolderLocation( NULL, CSIDL_APPDATA , &pidl);
+	TCHAR tmp[MAX_PATH ];
+	SHGetPathFromIDList(pidl, tmp);
+	CDuiString ConfigPath;
+	ConfigPath = tmp;
+	ConfigPath.Append(_T("\\DuiDesigner\\config.ini"));
+
+	CConfigFile tCfgIni(ConfigPath.GetData());
+	CString sProSln;
+	tCfgIni.GetValues(_T("ProjectSln"),sProSln);
+	if(!sProSln.IsEmpty())
+	{
+		g_pFileView->OnProjectOpen(sProSln);
+	}
+			
 
 	return 0;
 }

@@ -64,7 +64,7 @@ BOOL CDialogDefaultAttribList::OnInitDialog()
 
 	m_pManager = g_pMainFrame->GetActiveUIView()->GetPaintManager();
 	ASSERT(m_pManager);
-	const CStdStringPtrMap& DefaultAttribHash = m_pManager->GetDefaultAttribultes();
+	const CStdStringPtrMap DefaultAttribHash; /*= m_pManager->GetDefaultAttribultes()*/ //´ý½â¾ö
 	for(int i=0; i<DefaultAttribHash.GetSize(); i++)
 	{
 		LPCTSTR pstrName = DefaultAttribHash.GetAt(i);

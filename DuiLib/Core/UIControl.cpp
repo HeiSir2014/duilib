@@ -25,7 +25,9 @@ m_dwFocusBorderColor(0),
 m_bColorHSL(false),
 m_nBorderSize(0),
 m_nBorderStyle(PS_SOLID),
-m_nTooltipWidth(300)
+m_nTooltipWidth(300),
+m_dWidthOfParent(0),
+m_dHeightOfParent(0)
 {
     m_cXY.cx = m_cXY.cy = 0;
     m_cxyFixed.cx = m_cxyFixed.cy = 0;
@@ -107,6 +109,36 @@ void CControlUI::SetText(LPCTSTR pstrText)
 
     m_sText = pstrText;
     Invalidate();
+}
+
+bool CControlUI::AddChild(HWND nHwnd)
+{
+	return m_lChildHwnd.Add(nHwnd);
+}
+
+void CControlUI::NotifyChildSizeAndPaint( bool IsPaint )
+{
+	if (m_lChildHwnd.GetSize() > 0)
+	{
+		//if(IsPaint)
+		//{
+		//	for (int i = 0 ; i < m_lChildHwnd.GetSize(); ++i )
+		//		::SendMessage((HWND)m_lChildHwnd[i], WM_OPGL_PAINT, 0, 0);
+		//}
+		//else
+		{
+			unsigned int wParam,lParam;
+			wParam = lParam = 0;
+			wParam = m_rcItem.left << 16;
+			wParam += m_rcItem.top;
+			lParam = m_rcItem.right << 16;
+			lParam += m_rcItem.bottom;
+			for (int i = 0 ; i < m_lChildHwnd.GetSize(); ++i )
+			{
+				::SendMessage((HWND)m_lChildHwnd[i], WM_OPGL_SIZE,wParam,lParam);
+			}
+		}
+	}
 }
 
 DWORD CControlUI::GetBkColor() const
@@ -311,6 +343,8 @@ void CControlUI::SetPos(RECT rc, bool bNeedInvalidate)
 		}
 		m_pManager->Invalidate(invalidateRc);
 	}
+
+	NotifyChildSizeAndPaint();
 }
 
 void CControlUI::Move(SIZE szOffset, bool bNeedInvalidate)
@@ -334,6 +368,8 @@ void CControlUI::Move(SIZE szOffset, bool bNeedInvalidate)
 		}
 		m_pManager->Invalidate(invalidateRc);
 	}
+
+	NotifyChildSizeAndPaint();
 }
 
 int CControlUI::GetWidth() const
@@ -393,6 +429,11 @@ void CControlUI::SetFixedWidth(int cx)
     else NeedUpdate();
 }
 
+void CControlUI::SetFixedWidth(double cx)
+{
+	m_dWidthOfParent = cx;
+}
+
 int CControlUI::GetFixedHeight() const
 {
     return m_cxyFixed.cy;
@@ -404,6 +445,11 @@ void CControlUI::SetFixedHeight(int cy)
     m_cxyFixed.cy = cy;
     if( !m_bFloat ) NeedParentUpdate();
     else NeedUpdate();
+}
+
+void CControlUI::SetFixedHeight(double cy)
+{
+	m_dHeightOfParent = cy;
 }
 
 int CControlUI::GetMinWidth() const
@@ -855,14 +901,41 @@ void CControlUI::SetAttribute(LPCTSTR pstrName, LPCTSTR pstrValue)
         SetBorderRound(cxyRound);
     }
     else if( _tcscmp(pstrName, _T("bkimage")) == 0 ) SetBkImage(pstrValue);
-    else if( _tcscmp(pstrName, _T("width")) == 0 ) SetFixedWidth(_ttoi(pstrValue));
-    else if( _tcscmp(pstrName, _T("height")) == 0 ) SetFixedHeight(_ttoi(pstrValue));
+    else if( _tcscmp(pstrName, _T("width")) == 0 ) 
+	{
+		CDuiString nValue = pstrValue;
+		if(nValue.Find('.')>0)
+		{
+			SetFixedWidth(_ttof(pstrValue));
+		}
+		else
+		{
+			SetFixedWidth(_ttoi(pstrValue));
+		}
+	}
+    else if( _tcscmp(pstrName, _T("height")) == 0 ) 
+	{
+		CDuiString nValue = pstrValue;
+		if(nValue.Find('.')>0)
+		{
+			SetFixedHeight(_ttof(pstrValue));
+		}
+		else
+		{
+			SetFixedHeight(_ttoi(pstrValue));
+		}
+	}
     else if( _tcscmp(pstrName, _T("minwidth")) == 0 ) SetMinWidth(_ttoi(pstrValue));
     else if( _tcscmp(pstrName, _T("minheight")) == 0 ) SetMinHeight(_ttoi(pstrValue));
     else if( _tcscmp(pstrName, _T("maxwidth")) == 0 ) SetMaxWidth(_ttoi(pstrValue));
     else if( _tcscmp(pstrName, _T("maxheight")) == 0 ) SetMaxHeight(_ttoi(pstrValue));
     else if( _tcscmp(pstrName, _T("name")) == 0 ) SetName(pstrValue);
-    else if( _tcscmp(pstrName, _T("text")) == 0 ) SetText(pstrValue);
+    else if( _tcscmp(pstrName, _T("text")) == 0 ) 
+	{
+		CDuiString tStr = pstrValue;
+		CPaintManagerUI::ProcessMultiLanguageTokens(tStr);
+		SetText(tStr);
+	}
     else if( _tcscmp(pstrName, _T("tooltip")) == 0 ) SetToolTip(pstrValue);
     else if( _tcscmp(pstrName, _T("userdata")) == 0 ) SetUserData(pstrValue);
     else if( _tcscmp(pstrName, _T("enabled")) == 0 ) SetEnabled(_tcscmp(pstrValue, _T("true")) == 0);
@@ -921,9 +994,28 @@ CControlUI* CControlUI::ApplyAttributeList(LPCTSTR pstrList)
     return this;
 }
 
+bool CControlUI::IsSizeOfParent() const
+{
+	if( m_dWidthOfParent > 0 || m_dHeightOfParent>0)
+		return true;
+
+	return false;
+}
+
 SIZE CControlUI::EstimateSize(SIZE szAvailable)
 {
-    return m_cxyFixed;
+	SIZE size = {0,0};
+	if( m_dWidthOfParent > 0)
+		size.cx = (LONG)(szAvailable.cx * m_dWidthOfParent);
+	else
+		size.cx = m_cxyFixed.cx;
+
+	if( m_dHeightOfParent > 0)
+		size.cy = (LONG)(szAvailable.cy * m_dHeightOfParent);
+	else
+		size.cy = m_cxyFixed.cy;
+
+    return size;
 }
 
 void CControlUI::DoPaint(HDC hDC, const RECT& rcPaint)
@@ -947,6 +1039,8 @@ void CControlUI::DoPaint(HDC hDC, const RECT& rcPaint)
         PaintText(hDC);
         PaintBorder(hDC);
     }
+	
+	NotifyChildSizeAndPaint(true);
 }
 
 void CControlUI::PaintBkColor(HDC hDC)

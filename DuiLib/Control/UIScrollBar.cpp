@@ -677,6 +677,20 @@ namespace DuiLib
 				}
 			}
 			else {
+				UINT button_1 = m_uButton1State,button2 = m_uButton2State;
+				if(!::PtInRect(&m_rcButton1, event.ptMouse))
+					m_uButton1State &= ~UISTATE_HOT;
+				else
+					m_uButton1State |= UISTATE_HOT;
+
+				if(!::PtInRect(&m_rcButton2, event.ptMouse))
+					m_uButton2State &= ~UISTATE_HOT;
+				else
+					m_uButton2State |= UISTATE_HOT;
+
+				if(button_1 != m_uButton1State || button2 != m_uButton2State)
+					Invalidate();
+
 				if( (m_uThumbState & UISTATE_HOT) != 0 ) {
 					if( !::PtInRect(&m_rcThumb, event.ptMouse) ) {
 						m_uThumbState &= ~UISTATE_HOT;
@@ -767,8 +781,6 @@ namespace DuiLib
 		if( event.Type == UIEVENT_MOUSEENTER )
 		{
 			if( IsEnabled() ) {
-				m_uButton1State |= UISTATE_HOT;
-				m_uButton2State |= UISTATE_HOT;
 				if( ::PtInRect(&m_rcThumb, event.ptMouse) ) m_uThumbState |= UISTATE_HOT;
 				Invalidate();
 			}

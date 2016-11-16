@@ -145,20 +145,20 @@ CControlUI* CDialogBuilder::Create(IDialogBuilderCallback* pCallback, CPaintMana
             }
 			else if( _tcsicmp(pstrClass, _T("MultiLanguage")) == 0 ) {
 				nAttributes = node.GetAttributeCount();
-				int id = -1;
+				LPCTSTR pId = NULL;
 				LPCTSTR pMultiLanguage = NULL;
 				for( int i = 0; i < nAttributes; i++ ) {
 					pstrName = node.GetAttributeName(i);
 					pstrValue = node.GetAttributeValue(i);
 					if( _tcsicmp(pstrName, _T("id")) == 0 ) {
-						id = _tcstol(pstrValue, &pstr, 10);
+						pId = pstrValue;
 					}
 					else if( _tcsicmp(pstrName, _T("value")) == 0 ) {
 						pMultiLanguage = pstrValue;
 					}
 				}
-				if (id >= 0 && pMultiLanguage ) {
-					pManager->AddMultiLanguageString(id, pMultiLanguage);
+				if (pId >= 0 && pMultiLanguage ) {
+					pManager->AddMultiLanguageString(pId, pMultiLanguage);
 				}
 			}
         }
@@ -462,7 +462,7 @@ CControlUI* CDialogBuilder::_Parse(CMarkupNode* pRoot, CControlUI* pParent, CPai
 			else
 			{
 				if( pContainer == NULL ) pContainer = static_cast<IContainerUI*>(pParent->GetInterface(_T("IContainer")));
-				ASSERT(pContainer);
+				//ASSERT(pContainer);
 				if( pContainer == NULL ) return NULL;
 				if( !pContainer->Add(pControl) ) {
 					delete pControl;

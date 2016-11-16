@@ -1662,12 +1662,12 @@ void CLayoutManager::SaveControlProperty(CControlUI* pControl, TiXmlElement* pNo
 		pNode->SetAttribute("minheight", StringConvertor::WideToUtf8(szBuf));
 	}
 
-	TRelativePosUI relativePos = pControl->GetRelativePos();
-	if(relativePos.bRelative)
-	{
-		_stprintf_s(szBuf, _T("%d,%d,%d,%d"), relativePos.nMoveXPercent, relativePos.nMoveYPercent, relativePos.nZoomXPercent, relativePos.nZoomYPercent);
-		pNode->SetAttribute("relativepos", StringConvertor::WideToUtf8(szBuf));
-	}
+	//TRelativePosUI relativePos = pControl->GetRelativePos();
+	//if(relativePos.bRelative)
+	//{
+	//	_stprintf_s(szBuf, _T("%d,%d,%d,%d"), relativePos.nMoveXPercent, relativePos.nMoveYPercent, relativePos.nZoomXPercent, relativePos.nZoomYPercent);
+	//	pNode->SetAttribute("relativepos", StringConvertor::WideToUtf8(szBuf));
+	//}
 
 	if (pControl->IsMouseEnabled()==false)
 	{
@@ -2470,6 +2470,7 @@ bool CLayoutManager::SaveSkinFile( LPCTSTR pstrPathName )
 			cachedFonts.push_back(lf);
 
 			TiXmlElement* pFontElem = new TiXmlElement("Font");
+			pFontElem->SetAttribute("id", index);
 			pFontElem->SetAttribute("name", StringConvertor::WideToUtf8(lf.lfFaceName));
 
 			_stprintf_s(szBuf, _T("%d"), -lf.lfHeight);
@@ -2489,7 +2490,7 @@ bool CLayoutManager::SaveSkinFile( LPCTSTR pstrPathName )
 		}
 	}
 
-	const CStdStringPtrMap& defaultAttrHash = m_Manager.GetDefaultAttribultes();
+	const CStdStringPtrMap defaultAttrHash; /* = m_Manager.GetDefaultAttribultes();*/ //´ý½â¾ö
 	if(defaultAttrHash.GetSize() > 0)
 	{
 		for (int index = 0; index < defaultAttrHash.GetSize(); ++index)
@@ -2672,17 +2673,17 @@ void CLayoutManager::SaveItemProperty( CControlUI* pControl, TiXmlElement* pNode
 		pNode->SetAttribute("itemlinecolor", StringConvertor::WideToUtf8(szBuf));
 	}
 
-	if(pListInfo->sBkImage && _tcslen(pListInfo->sBkImage) > 0)
-		pNode->SetAttribute("itembkimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->sBkImage)));
+	if(!pListInfo->diBk.sImageName.IsEmpty())
+		pNode->SetAttribute("itembkimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->diBk.sImageName)));
 
-	if(pListInfo->sSelectedImage && _tcslen(pListInfo->sSelectedImage) > 0)
-		pNode->SetAttribute("itemselectedimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->sSelectedImage)));
+	if(!pListInfo->diSelected.sImageName.IsEmpty())
+		pNode->SetAttribute("itemselectedimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->diSelected.sImageName)));
 
-	if(pListInfo->sHotImage && _tcslen(pListInfo->sHotImage) > 0)
-		pNode->SetAttribute("itemhotimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->sHotImage)));
+	if(!pListInfo->diHot.sImageName.IsEmpty())
+		pNode->SetAttribute("itemhotimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->diHot.sImageName)));
 
-	if(pListInfo->sDisabledImage && _tcslen(pListInfo->sDisabledImage) > 0)
-		pNode->SetAttribute("itemdisabledimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->sDisabledImage)));
+	if(!pListInfo->diDisabled.sImageName.IsEmpty())
+		pNode->SetAttribute("itemdisabledimage", StringConvertor::WideToUtf8(ConvertImageFileName(pListInfo->diDisabled.sImageName)));
 
 	CDuiString tstrAlgin;
 	UINT uTextStyle = pListInfo->uTextStyle;

@@ -373,8 +373,8 @@ void CImageDialog::OnLbnDblclkListImageResource()
 	// TODO: Add your control notification handler code here
 	int nIndex=m_lstImages.GetCurSel();
 	LPCTSTR pstrImage=(LPCTSTR)m_lstImages.GetItemDataPtr(nIndex);
-
-	SetImageProperty(pstrImage);
+	if(pstrImage)
+		SetImageProperty(pstrImage);
 }
 
 void CImageDialog::OnDestroy()

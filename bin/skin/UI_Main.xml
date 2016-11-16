@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<Window size="800,600" sizebox="3,3,3,3" caption="0,0,0,38">
+	<Font bold="false" underline="false" italic="false" shared="false" default="false" />
+	<Default />
+	<Font id="0" name="宋体" size="13" bold="true" />
+	<VerticalLayout width="800" height="600" bkimage="file='windowBkg.png' corner='5,38,120,100'">
+		<HorizontalLayout height="38">
+			<Container width="24" height="20" padding="0,7,0,0" bkimage="main_logo.png" />
+			<Label text="窗口标题" padding="5,0,0,0" textcolor="#FF447AA1" disabledtextcolor="#FFA7A6AA" font="0" />
+			<Control />
+			<HorizontalLayout width="128" inset="0,1,0,0">
+				<Button name="settingbtn" maxheight="20" maxwidth="32" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file='btn_sys_setting.png' source='0,0,32,20'" hotimage="file='btn_sys_setting.png' source='33,0,64,20'" pushedimage="file='btn_sys_setting.png' source='65,0,96,20'" />
+				<Button name="minbtn" maxheight="20" maxwidth="32" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file='btn_sys_minimize.png' source='0,0,32,20'" hotimage="file='btn_sys_minimize.png' source='33,0,64,20'" pushedimage="file='btn_sys_minimize.png' source='65,0,96,20'" />
+				<Button name="maxbtn" maxheight="20" maxwidth="32" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file='btn_sys_maximize.png' source='0,0,32,20'" hotimage="file='btn_sys_maximize.png' source='33,0,64,20'" pushedimage="file='btn_sys_maximize.png' source='65,0,96,20'" />
+				<Button name="restorebtn" visible="false" maxheight="20" maxwidth="32" align="center" normalimage="file='btn_sys_restore.png' source='0,0,32,20'" hotimage="file='btn_sys_restore.png' source='33,0,64,20'" pushedimage="file='btn_sys_restore.png' source='65,0,96,20'" />
+				<Button name="closebtn" maxheight="20" maxwidth="32" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="file='btn_sys_close.png' source='0,0,32,20'" hotimage="file='btn_sys_close.png' source='33,0,64,20'" pushedimage="file='btn_sys_close.png' source='65,0,96,20'" />
+			</HorizontalLayout>
+		</HorizontalLayout>
+		<HorizontalLayout height="38">
+			<Control width="0.1" />
+			<Button text="左边1" width="0.2" textcolor="#FF447AA1" bkcolor="0xFFAA00AA" disabledtextcolor="#FFA7A6AA" font="0" />
+			<Button text="左边2" width="0.7" textcolor="#FF447AA1" bkcolor="0xFF00AAAA" disabledtextcolor="#FFA7A6AA" font="0" />
+			<Button text="右边" width="50" textcolor="#FF447AA1" bkcolor="0xFFAAAA00" disabledtextcolor="#FFA7A6AA" font="0" />
+		</HorizontalLayout>
+		<HorizontalLayout pos="0,76,800,600">
+			<WebBrowser pos="0,76,800,600" width="0" height="0" />
+		</HorizontalLayout>
+	</VerticalLayout>
+</Window>

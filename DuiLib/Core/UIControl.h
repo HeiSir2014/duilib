@@ -83,8 +83,11 @@ public:
     virtual void SetFixedXY(SIZE szXY);      // 仅float为true时有效
     virtual int GetFixedWidth() const;       // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
     virtual void SetFixedWidth(int cx);      // 预设的参考值
+	virtual void SetFixedWidth(double cx);      // 预设的参考值
+	
     virtual int GetFixedHeight() const;      // 实际大小位置使用GetPos获取，这里得到的是预设的参考值
     virtual void SetFixedHeight(int cy);     // 预设的参考值
+	virtual void SetFixedHeight(double cy);     // 预设的参考值
     virtual int GetMinWidth() const;
     virtual void SetMinWidth(int cx);
     virtual int GetMaxWidth() const;
@@ -129,6 +132,7 @@ public:
     virtual bool IsFocused() const;
     virtual void SetFocus();
     virtual bool IsFloat() const;
+	virtual bool IsSizeOfParent() const;
     virtual void SetFloat(bool bFloat = true);
 
     virtual CControlUI* FindControl(FINDCONTROLPROC Proc, LPVOID pData, UINT uFlags);
@@ -163,6 +167,9 @@ public:
 	void SetVirtualWnd(LPCTSTR pstrValue);
 	CDuiString GetVirtualWnd() const;
 
+
+	bool AddChild(HWND nHwnd);
+	void NotifyChildSizeAndPaint( bool IsPaint = false);
 public:
     CEventSource OnInit;
     CEventSource OnDestroy;
@@ -213,6 +220,9 @@ protected:
     SIZE m_cxyBorderRound;
     RECT m_rcPaint;
 	RECT m_rcBorderSize;
+	double m_dWidthOfParent;
+	double m_dHeightOfParent;
+	CStdPtrArray m_lChildHwnd;
 };
 
 } // namespace DuiLib

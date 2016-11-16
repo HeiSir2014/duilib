@@ -7,6 +7,11 @@
 namespace DuiLib {
 /////////////////////////////////////////////////////////////////////////////////////
 //
+//WMUSER 消息定义防止重复
+//#define WM_OPGL_OPEN	WM_USER+0x0101
+#define WM_OPGL_SIZE	WM_USER+0x0102
+//#define WM_OPGL_PAINT	WM_USER+0x0102
+//#define WM_DLG_RESULT_OPEN	WM_USER+0x0103
 
 #define UI_WNDSTYLE_CONTAINER  (0)
 #define UI_WNDSTYLE_FRAME      (WS_VISIBLE | WS_OVERLAPPEDWINDOW)

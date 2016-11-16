@@ -70,12 +70,29 @@ void CComboWnd::Init(CComboUI* pOwner)
         ::MapWindowRect(pOwner->GetManager()->GetPaintWindow(), HWND_DESKTOP, &rc);
     }
     
-    Create(pOwner->GetManager()->GetPaintWindow(), NULL, WS_POPUP, WS_EX_TOOLWINDOW, rc);
-    // HACK: Don't deselect the parent's caption
-    HWND hWndParent = m_hWnd;
-    while( ::GetParent(hWndParent) != NULL ) hWndParent = ::GetParent(hWndParent);
-    ::ShowWindow(m_hWnd, SW_SHOW);
-    ::SendMessage(hWndParent, WM_NCACTIVATE, TRUE, 0L);
+    Create(pOwner->GetManager()->GetPaintWindow(),NULL,WS_POPUPWINDOW, WS_EX_TOOLWINDOW, rc);
+	//Create(*pOwner,NULL, UI_WNDSTYLE_CHILD, WS_EX_TOOLWINDOW, rc);
+	if (m_hWnd > 0)
+	{
+		HFONT hFont=NULL;
+		int iFontIndex= m_pOwner->GetListInfo()->nFont;
+		if (iFontIndex!=-1)
+			hFont=m_pOwner->GetManager()->GetFont(iFontIndex);
+		if (hFont==NULL)
+			hFont=m_pOwner->GetManager()->GetDefaultFontInfo()->hFont;
+
+		TFontInfo* iFont = m_pOwner->GetManager()->GetFontInfo(hFont);
+		if(iFont)
+		{
+			m_pm.SetDefaultFont(iFont->sFontName,iFont->iSize,iFont->bBold,iFont->bUnderline,iFont->bItalic,false);
+		}
+
+		// HACK: Don't deselect the parent's caption
+		HWND hWndParent = m_hWnd;
+		while( ::GetParent(hWndParent) != NULL ) hWndParent = ::GetParent(hWndParent);
+		::ShowWindow(m_hWnd, SW_SHOW);
+		::SendMessage(hWndParent, WM_NCACTIVATE, TRUE, 0L);
+	}
 }
 
 LPCTSTR CComboWnd::GetWindowClassName() const
@@ -95,6 +112,7 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
     if( uMsg == WM_CREATE ) {
         m_pm.Init(m_hWnd);
+		
         // The trick is to add the items to the new container. Their owner gets
         // reassigned by this operation - which is why it is important to reassign
         // the items back to the righfull owner/manager when the window closes.
@@ -115,7 +133,6 @@ LRESULT CComboWnd::HandleMessage(UINT uMsg, WPARAM wParam, LPARAM lParam)
             m_pLayout->Add(static_cast<CControlUI*>(m_pOwner->GetItemAt(i)));
         }
         m_pm.AttachDialog(m_pLayout);
-        
         return 0;
     }
     else if( uMsg == WM_CLOSE ) {
@@ -484,6 +501,7 @@ SIZE CComboUI::EstimateSize(SIZE szAvailable)
 
 bool CComboUI::Activate()
 {
+	//return false;
     if( !CControlUI::Activate() ) return false;
     if( m_pWindow ) return true;
     m_pWindow = new CComboWnd();

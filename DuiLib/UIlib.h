@@ -69,6 +69,7 @@
 
 #include "Utils/Utils.h"
 #include "Utils/UIDelegate.h"
+#include "Utils/MultiLanguage.h"
 #include "Core/UIDefine.h"
 #include "Core/UIManager.h"
 #include "Core/UIBase.h"
@@ -106,5 +107,7 @@
 
 #include "Control/UIActiveX.h"
 #include "Control/UIWebBrowser.h"
+#include "Control/UIMenu.h"
+#include "Control/UICrack.h"
 //#include "Control/UIFlash.h"
 

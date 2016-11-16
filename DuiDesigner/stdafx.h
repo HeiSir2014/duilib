@@ -14,7 +14,10 @@
 
 #include "targetver.h"
 
+#ifndef _CRT_SECURE_NO_WARNINGS
 #define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS      // 某些 CString 构造函数将是显式的
 
 // 关闭 MFC 对某些常见但经常可放心忽略的警告消息的隐藏
@@ -34,6 +37,8 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
+#include <io.h>
+
 #ifdef _UNICODE
 #if defined _M_IX86
 #pragma comment(linker,"/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='x86' publicKeyToken='6595b64144ccf1df' language='*'\"")
@@ -50,20 +55,7 @@
 //////////////////////////////////////////////////////////////////////////
 //Link
 
-#ifdef _DEBUG
-#   ifdef _UNICODE
-#       pragma comment(lib, "..\\Lib\\DuiLib_ud.lib")
-#   else
-#       pragma comment(lib, "..\\Lib\\DuiLib_d.lib")
-#   endif
-#else
-#   ifdef _UNICODE
-#       pragma comment(lib, "..\\Lib\\DuiLib_u.lib")
-#   else
-#       pragma comment(lib, "..\\Lib\\DuiLib.lib")
-#   endif
-#endif
-
+#pragma comment(lib, "DuiLib.lib")
 #pragma comment(lib,"Dbghelp.lib")
 
 //////////////////////////////////////////////////////////////////////////
@@ -197,10 +189,11 @@ using DuiLib::CListContainerElementUI;
 using DuiLib::CScrollBarUI;
 using DuiLib::IContainerUI;
 using DuiLib::STRINGorID;
-using DuiLib::TRelativePosUI;
+//using DuiLib::TRelativePosUI;
 using DuiLib::TImageInfo;
 using DuiLib::TFontInfo;
 using DuiLib::TEventUI;
+using DuiLib::TDrawInfo;
 using DuiLib::EVENTTYPE_UI;
 
 extern CMainFrame* g_pMainFrame;

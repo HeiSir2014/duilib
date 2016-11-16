@@ -284,6 +284,8 @@ public:
 
 	static void AddMultiLanguageString(int id, LPCTSTR pStrMultiLanguage);
 	static LPCTSTR GetMultiLanguageString(int id);
+	static void AddMultiLanguageString(LPCTSTR id, LPCTSTR pStrMultiLanguage);
+	static LPCTSTR GetMultiLanguageString(LPCTSTR id);
 	static bool RemoveMultiLanguageString(int id);
 	static void RemoveAllMultiLanguageString();
 	static void ProcessMultiLanguageTokens(CDuiString& pStrMultiLanguage);

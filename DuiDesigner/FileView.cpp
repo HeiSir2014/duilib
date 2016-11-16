@@ -3,7 +3,7 @@
 #include "FileView.h"
 #include "Resource.h"
 #include "DuiDesigner.h"
-
+#include "ConfigFile.h"
 #include "DialogProjectNew.h"
 #include "UIUtil.h"
 
@@ -147,6 +147,9 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	// 填入一些静态树视图数据(此处只需填入虚拟代码，而不是复杂的数据)
 	AdjustLayout();
 
+
+	
+
 	return 0;
 }
 
@@ -243,12 +246,45 @@ void CFileView::OnProjectOpen()
 
 		CGlobalVariable::m_strProjectName = dlg.GetFileTitle();
 		CString strPath = dlg.GetPathName();
+
+		ITEMIDLIST *pidl;
+		SHGetSpecialFolderLocation( NULL, CSIDL_APPDATA , &pidl);
+		TCHAR tmp[MAX_PATH ];
+		SHGetPathFromIDList(pidl, tmp);
+		CDuiString ConfigPath;
+		ConfigPath = tmp;
+		ConfigPath.Append(_T("\\DuiDesigner"));
+		CreateDirectory(ConfigPath,NULL);
+
+		ConfigPath.Append(_T("\\config.ini"));
+
+		CConfigFile tCfgIni(ConfigPath.GetData());
+		tCfgIni.SetValues(_T("ProjectSln"),strPath);
+
+
 		int nPos = strPath.ReverseFind(_T('\\'));
 		CGlobalVariable::m_strProjectPath = strPath.Left(nPos + 1);
 
 		LoadUITree(strPath);
 		CGlobalVariable::m_bIsProjectExist = true;
 	}
+}
+
+void CFileView::OnProjectOpen(LPCTSTR sProjectPath)
+{
+	if(CGlobalVariable::m_bIsProjectExist)
+		OnProjectClose();
+	CString str =  sProjectPath;
+	int nPos = str.ReverseFind(_T('\\'));
+	int nPosEnd = str.ReverseFind(_T('.'));
+
+	CGlobalVariable::m_strProjectName = str.Mid(nPos + 1,nPosEnd - nPos -1 );
+	CString strPath = sProjectPath;
+	nPos = strPath.ReverseFind(_T('\\'));
+	CGlobalVariable::m_strProjectPath = strPath.Left(nPos + 1);
+
+	LoadUITree(strPath);
+	CGlobalVariable::m_bIsProjectExist = true;
 }
 
 void CFileView::LoadUITree(CString& strPath)
@@ -431,7 +467,10 @@ void CFileView::OpenSkinFile(HTREEITEM hItem)
 		return;
 
 	CString strFilePath = CGlobalVariable::m_strProjectPath + m_wndFileView.GetItemText(hItem);
-	AfxGetApp()->OpenDocumentFile(strFilePath);
+	if (_access(StringConvertor::WideToAnsi(strFilePath),0) == 0)
+	{
+		AfxGetApp()->OpenDocumentFile(strFilePath);
+	}
 }
 
 CDocument* CFileView::FindSkinFile(CString& strPath)

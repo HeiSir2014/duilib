@@ -57,6 +57,12 @@ namespace DuiLib
 			CControlUI* pControl = static_cast<CControlUI*>(m_items[it1]);
 			if( !pControl->IsVisible() ) continue;
 			if( pControl->IsFloat() ) continue;
+			if (pControl->IsSizeOfParent()) 
+			{
+				nAdjustables++;
+				nEstimateNum++;
+				continue;
+			}
 			SIZE sz = pControl->EstimateSize(szAvailable);
 			if( sz.cx == 0 ) {
 				nAdjustables++;
@@ -75,6 +81,7 @@ namespace DuiLib
 		if( nAdjustables > 0 ) cxExpand = MAX(0, (szAvailable.cx - cxFixed) / nAdjustables);
 		// Position the elements
 		SIZE szRemaining = szAvailable;
+		//szRemaining.cx = szAvailable.cx - cxFixed;
 		int iPosX = rc.left;
 		if( m_pHorizontalScrollBar && m_pHorizontalScrollBar->IsVisible() ) {
 			iPosX -= m_pHorizontalScrollBar->GetScrollPos();
@@ -90,7 +97,9 @@ namespace DuiLib
 			}
 			RECT rcPadding = pControl->GetPadding();
 			szRemaining.cx -= rcPadding.left;
-			SIZE sz = pControl->EstimateSize(szRemaining);
+			SIZE rcTmpRemaining = szRemaining;
+			rcTmpRemaining.cx = szRemaining.cx - rcPadding.right - cxFixedRemaining;
+			SIZE sz = pControl->EstimateSize(rcTmpRemaining);
 			if( sz.cx == 0 ) {
 				iAdjustable++;
 				sz.cx = cxExpand;

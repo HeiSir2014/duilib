@@ -35,6 +35,7 @@ namespace DuiLib
 		int m_nMax;
 		int m_nMin;
 		int m_nValue;
+		int m_nLastValue;
 
 		TDrawInfo m_diFore;
 	};

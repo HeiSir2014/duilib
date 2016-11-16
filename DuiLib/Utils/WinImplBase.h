@@ -29,13 +29,14 @@ namespace DuiLib
 		DUI_DECLARE_MESSAGE_MAP()
 		virtual void OnClick(TNotifyUI& msg);
 
+
+		CPaintManagerUI m_PaintManager;
 	protected:
 		virtual CDuiString GetSkinFolder() = 0;
 		virtual CDuiString GetSkinFile() = 0;
 		virtual LPCTSTR GetWindowClassName(void) const = 0 ;
 		virtual LRESULT ResponseDefaultKeyEvent(WPARAM wParam);
 
-		CPaintManagerUI m_PaintManager;
 		static LPBYTE m_lpResourceZIPBuffer;
 
 	public:
